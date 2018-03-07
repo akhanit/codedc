@@ -28,6 +28,8 @@ transaction createReport {
   o String uHashValue
 }
 
+event submitReport {
+}
 
 // transaction updateW2 {
 //   --> IncomeReport asset

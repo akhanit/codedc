@@ -4,20 +4,28 @@
  */
 
 /**
- * Sample transaction
- * @param {org.afs.com.ChangeAssetValue} changeAssetValue
+ * Transaction to create a report
+ * @param {org.afs.com.CreateReport} tx Logic to create report 
  * @transaction
  */
-function onChangeAssetValue(changeAssetValue) {
-    var assetRegistry;
-    var id = changeAssetValue.relatedAsset.assetId;
-    return getAssetRegistry('org.afs.com.SampleAsset')
-        .then(function(ar) {
-            assetRegistry = ar;
-            return assetRegistry.get(id);
-        })
-        .then(function(asset) {
-            asset.value = changeAssetValue.newValue;
-            return assetRegistry.update(asset);
-        });
+async function createReport(tx) {
+    var uHash = tx.asset.uHash;
+    var id = tx.asset.reportID;
+
+    //changing the Income Report to new Value
+    tx.asset.iHash = tx.iHashValue;
+
+    //updating the Asset Registry
+    return getAssetRegistry(org.ags.com.asset)
+    .then(function(assetRegistry){
+        return assetRegistry.update(tx.asset);
+    
+    //emit event to get the Promise
+    var event = getFactory().newEvent(org.afs.com.event,submitReport);
+    event.asset = tx.asset;
+    event.asset.reportID;
+    event.iHash = tx.iHashValue;
+    emit(event);
+    })
+
 }
