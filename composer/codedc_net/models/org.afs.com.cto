@@ -7,37 +7,19 @@ namespace org.afs.com
 participant PayrollProcessor identified by pID {
   o String pID
   o String pName
+}
+
+asset Report identified by uHash {
   o String uHash
   o String iHash
 }
 
-participant Regulator identified by regID {
-  o String regID
-}
-
-asset IncomeReport identified by reportID {
-  o String reportID
-  --> PayrollProcessor iHash
+transaction manageReport {
   o String uHash
-  o String pName
+  o String iHash
+  --> Report report
 }
 
-transaction createReport {
-  --> IncomeReport asset
-  o String iHashValue 
-  o String uHashValue
+transaction queryReport {
+  o String uHash
 }
-
-event submitReport {
-}
-
-// transaction updateW2 {
-//   --> IncomeReport asset
-//     o String newIncomeValue
-//     o String empHash
-// }
-
-// transaction createW2 {
-//   --> User user
-//     o String reportID
-// }

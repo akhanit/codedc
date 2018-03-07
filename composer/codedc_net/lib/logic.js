@@ -4,28 +4,48 @@
  */
 
 /**
- * Transaction to create a report
- * @param {org.afs.com.CreateReport} tx Logic to create report 
+ * Transaction to manage a report
+ * @param {org.afs.com.manageReport} tx 
  * @transaction
  */
-async function createReport(tx) {
-    var uHash = tx.asset.uHash;
-    var id = tx.asset.reportID;
 
-    //changing the Income Report to new Value
-    tx.asset.iHash = tx.iHashValue;
-
-    //updating the Asset Registry
-    return getAssetRegistry(org.ags.com.asset)
+function manageReport(tx) {
+  	var uHash = tx.uHash;
+  	var iHash = tx.iHash;
+  	
+  	return getAssetRegistry('org.afs.com.Report')
     .then(function(assetRegistry){
-        return assetRegistry.update(tx.asset);
-    
-    //emit event to get the Promise
-    var event = getFactory().newEvent(org.afs.com.event,submitReport);
-    event.asset = tx.asset;
-    event.asset.reportID;
-    event.iHash = tx.iHashValue;
-    emit(event);
+      	return assetRegistry.exists(uHash);
     })
+    .then(function(exists) {
+      	var flag = exists;
+     });
+  
+     if(flag == 0) {
+       return getAssetRegistry('org.afs.com.Report')
+       .then(function(assetRegistry){
+       		var factory = getFactory();
+            asset = factory.newResource('org.afs.com','Report',uHash);
+            asset.iHash = iHash;
+            return assetRegistry.add(asset);
+       });
+      }
+      else {
+          console.log("Already exists");
+      }
+}
 
+/**
+ * Transaction to manage a report
+ * @param {org.afs.com.queryReport} tx 
+ * @transaction
+ */
+
+function queryReport(tx) {	
+  var uHash = tx.uHash;
+  
+  return getAssetRegistry('org.afs.com.Report') 
+  .then(function(assetRegistry) {
+    return assetRegistry.get(uHash);
+  })
 }
