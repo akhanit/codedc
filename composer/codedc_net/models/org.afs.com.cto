@@ -4,16 +4,38 @@
 
 namespace org.afs.com
 
-participant User identified by email {
-  o String email
+participant PayrollProcessor identified by pID {
+  o String pID
+  o String pName
+  o String uHash
+  o String iHash
 }
 
-asset SampleAsset identified by assetId {
-  o String assetId
-  o String value
+participant Regulator identified by regID {
+  o String regID
 }
 
-transaction ChangeAssetValue {
-  o String newValue
-  --> Asset relatedAsset
+asset IncomeReport identified by reportID {
+  o String reportID
+  --> PayrollProcessor iHash
+  o String uHash
+  o String pName
 }
+
+transaction createReport {
+  --> IncomeReport asset
+  o String iHashValue 
+  o String uHashValue
+}
+
+
+// transaction updateW2 {
+//   --> IncomeReport asset
+//     o String newIncomeValue
+//     o String empHash
+// }
+
+// transaction createW2 {
+//   --> User user
+//     o String reportID
+// }
