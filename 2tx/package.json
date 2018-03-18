@@ -1,19 +1,20 @@
 {
-  "name": "2tx",
+  "name": "codedc_net",
   "version": "0.0.1",
-  "description": "Blockchain Demo for DC Blockchain Summit Code-a-Thon",
+  "description": "Hackathon brainsssssss",
   "scripts": {
     "test": "mocha --recursive"
   },
-  "author": "carlo.j.burgos",
-  "email": "carlo.j.burgos@accenturefederal.com",
+  "author": "Baseball Card Team",
+  "email": "asad.m.khan@accenture.com",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@angular/core": "^5.2.8",
+    "chai": "latest",
     "composer-admin": "latest",
     "composer-client": "latest",
     "composer-common": "latest",
     "composer-connector-embedded": "latest",
-    "chai": "latest",
     "eslint": "latest",
     "istanbul": "latest",
     "mkdirp": "latest",

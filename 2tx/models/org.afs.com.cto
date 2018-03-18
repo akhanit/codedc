@@ -1,0 +1,79 @@
+/**
+ * Write your model definitions here
+ */
+
+/**
+ * Write your model definitions here
+ */
+
+namespace org.afs.com
+
+participant PayrollProcessor identified by pID {
+  o String pID
+  o String pName
+}
+
+abstract participant user identified by userID{
+  o String userID
+}
+
+participant regulator extends user {
+  o String uType default = "Regulator"
+}
+
+participant individual extends user {
+  o String uType default = "Tax Payer"
+  o String First_Name
+  o String Last_Name
+  o String Ocupation
+  o String Employer
+  o String uHash
+  --> Report reports
+}
+
+asset Report identified by reportID {
+  o String reportID
+  o String uHash
+  o String iHash
+  o String IssueDate
+  o String DateChecked optional
+  o ReportStatus status optional
+  --> PayrollProcessor creator
+}
+
+transaction updateReport {
+  --> Report reportID
+  o String iHash
+}
+
+transaction validateReport {
+  o String iHash
+  o String uHash
+  --> Report report
+}
+
+transaction setupDemo {
+}
+
+event sendQuery {
+}
+
+event sendUpdate { 
+--> Report asset
+}
+
+event notifyCreation{ 
+--> Report asset
+}
+
+event validateReportEvent{
+  o String iHash
+  o String uHash
+  --> Report report
+}
+
+enum ReportStatus {
+  	o VALID
+    o INVALID
+    o PENDING
+}

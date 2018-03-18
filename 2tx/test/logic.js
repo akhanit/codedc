@@ -13,7 +13,7 @@ const path = require('path');
 
 require('chai').should();
 
-const namespace = 'org.example.biznet';
+const namespace = 'org.afs.com';
 const assetType = 'SampleAsset';
 
 describe('#' + namespace, () => {
@@ -88,7 +88,7 @@ describe('#' + namespace, () => {
             const factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
             // Create a user participant
-            const user = factory.newResource(namespace, 'User', 'carlo.j.burgos');
+            const user = factory.newResource(namespace, 'User', 'Baseball Card Team');
 
             // Create the asset
             const asset = factory.newResource(namespace, assetType, 'ASSET_001');
