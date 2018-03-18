@@ -60,9 +60,9 @@ function setupDemo() {
 
     var Individual = {
   				'u001':[
-                  	  {'userID':'u005',
-                       'First_Name':'Adina',
-                       'Last_Name':'ANton',
+                  	  {'userID':'u001',
+                       'First_Name':'John',
+                       'Last_Name':'Williams',
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NDJNDSHOIDUSHFKFSD',
@@ -70,9 +70,9 @@ function setupDemo() {
                        }
                 	],
                 'u002': [
-      				  {'userID':'u004',
-                       'First_Name':'Asad',
-                       'Last_Name':'Khan',
+      				  {'userID':'u002',
+                       'First_Name':'Rick',
+                       'Last_Name':'Winter',
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NUSHFHPOIDUSHFKFSD',
@@ -80,9 +80,9 @@ function setupDemo() {
                       }
     				],
                 'u003': [
-                  	  {'userID':'u006',
-                       'First_Name':'David',
-                       'Last_Name':'Khan',
+                  	  {'userID':'u003',
+                       'First_Name':'Tom',
+                       'Last_Name':'Anderson',
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NUSHFHPOINUSHFHPOI',

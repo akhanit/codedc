@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-function reportGenerator(reportGenerator) {
+function reportGenerator() {
 
 var reports = { 
     'u001': [{
@@ -23,38 +23,43 @@ var reports = {
     
 };
 
-    console.log('Generating Report based on '+reports);
-    console.log('-------------------------------------------');
+console.log('Generating Report based on '+reports);
+console.log('-------------------------------------------');
 
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
 
     var allReports = [];
-        for(report in reports){
-                r = reports[report]
-            for(i = 1;r.length;i++){
-                    reportTemplate = r[i];
-                    r.owner=reportGenerator.owner;
-                    reportTemplate.issueDate = '01/15/'+(currentYear - i).toString();
-                    reportTemplate.PayrollProcessor = reportGenerator.PayrollProcessor; 
 
-                    var genuHash = crypto.createHmac('sha256',reportGenerator.owner);
-                    var geniHash = crypto.createHmac('sha256',reportGenerator.Employer+reportGenerator.owner);
+for(report in reports){
+   r = reports[report]
+   for(i = 1;r.length;i++){
+        rp = {};
+        reportTemplate = r[i];
+        rp['owner']=reportTemplate.owner;
+        rp['IssueDate'] = '01/15/'+(currentYear - i).toString();
+        rp['PayrollProcessor']= reportTemplate.PayrollProcessor; 
 
-                    reportTemplate.uHash = genuHash;
-                    reportTemplate.iHash = geniHash;
+        var genuHash = crypto.createHmac('sha256',rp.owner);
+        var geniHash = crypto.createHmac('sha256',rp.Employer+rp.owner);
+
+        rp['uHash'] = genuHash;
+        rp['iHash'] = geniHash;
 
                     if(i = 1){
-                        reportTemplate.ReportStatus = 'Pending';
+                        r['ReportStatus'] = 'Pending';
                     }
                     else{
-                        reportTemplate.ReportStatus = 'Valid';
+                        r['ReportStatus'] = 'Valid';
                     }
                     
-                    r.push(reportTemplate);
+        r.push(rp);
 
-            }
-
+        }
+}
     console.log(r);
 
-}  
+    
+} 
+
+reportGenerator();
