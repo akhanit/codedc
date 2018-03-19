@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import $ from 'jquery';
 import './App.css';
 
 class App extends Component {
@@ -13,7 +11,8 @@ class App extends Component {
       emplSSN: "",
       uHash: "",
       iHash: "",
-      income: "0"
+      income: "0",
+      "checkHash": "",
     }
 
     this.calcUserHash = this.calcUserHash.bind(this);
@@ -21,6 +20,9 @@ class App extends Component {
     this.updateIncome = this.updateIncome.bind(this);
     this.updateName = this.updateName.bind(this);
     this.updateSSN = this.updateSSN.bind(this);
+    this.queryReport = this.queryReport.bind(this);
+    this.createReport = this.createReport.bind(this);
+    
     //this.SHA256 = this.SHA256.bind(this);
 
   }
@@ -58,26 +60,58 @@ class App extends Component {
     })
   }
 
-  submitForm(e) {
+  queryReport(e) {
     e.preventDefault();
 
+    console.log("Creating report...");
+     
     var data = {
-        "$class": "org.afs.com.Report",
-        "uHash": this.state.uHash,
-        "iHash": this.state.iHash
+      method: "POST",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      "asset": "org.afs.com.Report#123"
     }
 
-    $.ajax({
-      type: 'POST',
-      url: 'http://52.234.208.129:3000/api/org.afs.com.Report',
-      data: data
-    }).done(function(data) {
-      console.log(data);
+  fetch('http://52.168.50.192:3000/api/org.afs.com.queryReport', {"asset": "org.afs.com.Report#123"})
+    .then((res) => {
+      return res.json();
     })
-    .fail(function(er) {
-      console.log(er);
+    .then((res) => {
+    console.log(res)
+      console.log(res[0].asset);
+      this.setState({checkHash: res[0].asset})
     })
+    .catch((err) => {
+      console.log("Error creating report: " + err);
+    });
   }
+
+  createReport(e) {
+    e.preventDefault();
+    console.log("In submit form");
+
+    var data = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      }
+    };
+
+    fetch('http://52.168.50.192:3000/api/org.afs.com.queryReport', data)
+    .then((response) => {
+      //console.log(response.json());
+      return response.json();
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      console.log(error);
+      return error;
+    }); //End fetch.catch
+  } //end submitForm
 
 
   render() {
@@ -86,13 +120,13 @@ class App extends Component {
 
         <img src="Acc_Logo_Black_Purple_RGB.png" alt="ACN Logo" width="100" height="30"/>
 
-        <h1 Style="font-family: graphik, sans-serif">Payroll Processor</h1>
+        <h1> Payroll Processor</h1>
         <br/>
 
-        <form onSubmit="">
+        <form onSubmit={this.createReport}>
          Employer:
           <br/>
-          <input type="text" name="Employer" value="Accenture"/>
+          <input type="text" name="Employer" value="Accenture" readOnly/>
           <br/><br/>
           
           Employee Name:<br/>
@@ -100,7 +134,7 @@ class App extends Component {
           <br/><br/>
           
           Employee SSN:<br/>
-          <input class="test"type="text" name="Employee SSN" value={this.state.emplSSN} onChange={this.updateSSN}/>
+          <input type="text" name="Employee SSN" value={this.state.emplSSN} onChange={this.updateSSN}/>
            <br/><br/>
            
            Income:<br/>
@@ -113,10 +147,14 @@ class App extends Component {
            iHash: {this.state.iHash} 
            <br/><br/>
 
-         <br/><br/>
-         
-         <input type="submit" value="Submit"/>
+         <input type="submit" value="Create report"/>
         </form> 
+        <br/>
+        <button onClick={this.queryReport}>
+          Does this report exist?
+        </button>
+        <br/>
+        Hash from Report: {this.state.checkHash}
 
       </div>
     );

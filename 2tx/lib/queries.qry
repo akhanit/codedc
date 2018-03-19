@@ -1,0 +1,7 @@
+query getUserReports{
+    description: "Selects all reports that belongs to a PARAM uHash"
+    statement:
+        SELECT org.afs.com.Report
+            WHERE (uHash == _$uHash)
+                ORDER BY [reportID]
+}
