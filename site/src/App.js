@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import {SHA256} from './hashFunction.js';
 
 class App extends Component {
 
@@ -23,18 +24,11 @@ class App extends Component {
     this.queryReport = this.queryReport.bind(this);
     this.createReport = this.createReport.bind(this);
     
-    //this.SHA256 = this.SHA256.bind(this);
-
-  }
-
-  componentDidMount() {
-    //var a = "test";
-    //alert(SHA256(a));
   }
 
   calcUserHash() {
      this.setState ({
-      uHash: this.state.emplName + this.state.emplSSN
+      uHash: SHA256(this.state.emplName + this.state.emplSSN)
     });
   }
 
@@ -56,39 +50,52 @@ class App extends Component {
 
   calcIncHash() {
     this.setState ({
-      "iHash": this.state.income/100
+      "iHash": SHA256(this.state.income)
     })
   }
 
-  queryReport(e) {
+  createReport(e) {
     e.preventDefault();
 
     console.log("Creating report...");
-     
+
+    var url = "http://52.168.50.192:3000/api/org.afs.com.Report" 
+
+    var post_data = {
+        "$class": "org.afs.com.Report",
+        "reportID": Math.floor(Math.random() * Math.floor(999)), 
+        "uHash": this.uHash,
+        "iHash": this.iHash,
+        "IssueDate": Date.now(),
+        "DateChecked": Date.now(),
+        "status": "VALID",
+        "creator": "resource:org.afs.com.PayrollProcessor#1795",
+      }
+
     var data = {
-      method: "POST",
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(post_data),
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        Accept: "application/json",
+        "Content-Type": "application/json"
       },
-      "asset": "org.afs.com.Report#123"
     }
 
-  fetch('http://52.168.50.192:3000/api/org.afs.com.queryReport', {"asset": "org.afs.com.Report#123"})
+
+  fetch(url, data)
     .then((res) => {
       return res.json();
     })
     .then((res) => {
-    console.log(res)
-      console.log(res[0].asset);
-      this.setState({checkHash: res[0].asset})
+      console.log(res)
     })
     .catch((err) => {
       console.log("Error creating report: " + err);
     });
   }
 
-  createReport(e) {
+  queryReport(e) {
     e.preventDefault();
     console.log("In submit form");
 
@@ -111,7 +118,7 @@ class App extends Component {
       console.log(error);
       return error;
     }); //End fetch.catch
-  } //end submitForm
+  } //end
 
 
   render() {
@@ -137,7 +144,7 @@ class App extends Component {
           <input type="text" name="Employee SSN" value={this.state.emplSSN} onChange={this.updateSSN}/>
            <br/><br/>
            
-           Income:<br/>
+           Income this Pay Period:<br/>
           <input type="text" name="Income" value={this.state.income} onChange={this.updateIncome}/>       
            <br/><br/>
 
