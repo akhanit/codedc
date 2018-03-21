@@ -48,15 +48,78 @@ function validateReport(tx){
  * @param {org.afs.com.setupDemo} setupDemo - the Setup Demo transaction
  * @transaction
  */
-
 function setupDemo() {
  
     var factory = getFactory();
     var ns = 'org.afs.com';
 
-    reportU1 = 'r001';
-    reportU2 = 'r002';
-    reportU3 = 'r003';
+    var Reports = {
+        'r001': {
+                  uHash: '',
+                  iHash: '',
+                  IssueDate:'',
+                  DateChecked:'',
+                  Status:'Pending',
+                  Creater:'p001'
+        },
+        'r002': {
+                uHash: '',
+                iHash: '',
+                IssueDate:'',
+                DateChecked:'',
+                Status:'Pending',
+                Creater:'p001'
+        },
+        'r003': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+        'r004': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+        'r005': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+        'r006': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+        'r007': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+        'r008': {
+            uHash: '',
+            iHash: '',
+            IssueDate:'',
+            DateChecked:'',
+            Status:'Pending',
+            Creater:'p001'
+        },
+    };
+   
 
     var Individual = {
   				'u001':[
@@ -66,7 +129,7 @@ function setupDemo() {
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NDJNDSHOIDUSHFKFSD',
-                       'reports':'r001'
+                       'reports':['r001','r002','r003']
                        }
                 	],
                 'u002': [
@@ -76,7 +139,7 @@ function setupDemo() {
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NUSHFHPOIDUSHFKFSD',
-                       'reports':'r002'
+                       'reports':['r004','r005']
                       }
     				],
                 'u003': [
@@ -86,7 +149,7 @@ function setupDemo() {
                        'Ocupation':'Developer',
                        'Employer':'Accenture',
                        'uHash':'NUSHFHPOINUSHFHPOI',
-                       'reports':'r003'
+                       'reports':['r006','r007','r008']
                       }
                   	]
    	};
@@ -105,22 +168,31 @@ function setupDemo() {
                 individual.Ocupation = individualTemplate.Ocupation;
                 individual.Employer = individualTemplate.Employer;
                 individual.uHash = individualTemplate.uHash;
-                if(individualTemplate.userID == 'u001'){
-                    individual.reports = factory.newRelationship(ns,'Report',reportU1);
-                }
-                else if (individualTemplate.userID == 'u002'){
-                    individual.reports = factory.newRelationship(ns,'Report',reportU2);
-                }
-                else {
-                    individual.reports = factory.newRelationship(ns,'Report',reportU3);
-                }
 
-          	
+                return getAssetRegistry(ns+'.Report')
+                .then(function(assetRegistry){
+                    r = [];
+                    for(var mreport in Reports){
+                        reportID = Reports[mreport];
+                        for(var j=0;j<reportID.length; j++ ){
+                            var reportTemplate = reportID[j];
+                            var report = factory.newResource(ns,'Report',mreport);
+                            report.uHash = '1111';
+                            report.iHash ='1111';
+                            report.IssueDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                            report.DateChecked = '';
+                            individual.reports = factory.newRelationship(ns,'Report',mreport);
+                            r.push(report);
+                        }
+                    }
+                return assetRegistry.addAll(r);
+                });
+
               	ind.push(individual);
             }
         }
+
      return individualRegistry.addAll(ind);
 	});
 }
-
 
