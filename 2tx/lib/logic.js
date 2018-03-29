@@ -137,68 +137,28 @@ function setupDemo() {
 
     var Reports = {
         'r001': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r002': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r003': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r004': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r005': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
-                  'Creator':'p001'
+                  'Creator':'p002'
         }],
         'r006': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r007': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
                   'Creator':'p001'
         }],
         'r008': [{
-                  'uHash': '',
-                  'iHash': '',
-                  'IssueDate':'',
-                  'DateChecked':'',
-                  'Status':'Pending',
-                  'Creator':'p001'
+                  'Creator':'p002'
         }],
     };
    
@@ -246,7 +206,8 @@ function setupDemo() {
                           report.iHash = 'NDJNDSHOIDUSHFKFSD';
                           report.IssueDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
                           report.DateChecked = '';
-                          report.creator =  factory.newRelationship(ns,'PayrollProcessor','p001');
+                          var pID = Reports[User.reports[j]].Creator;
+                          report.creator =  factory.newRelationship(ns,'PayrollProcessor',pID);
                           report.status = "ISSUED";
                           r.push(report);
                      }
@@ -256,12 +217,14 @@ function setupDemo() {
   
     return getParticipantRegistry(ns + '.PayrollProcessor')
     .then(function(ppRegistry){
-    	var PP = factory.newResource(ns,'PayrollProcessor','p001')
-        PP.pName = 'Income Processor';
-        return ppRegistry.add(PP);
-    })
-    .then(function(){
-      return getAssetRegistry(ns + '.Report');
+        var PP = [];
+    	var PP1 = factory.newResource(ns,'PayrollProcessor','p001')
+        PP1.pName = 'Income Processor';
+        PP.push(PP1);
+        var PP2 = factory.newResource(ns,'PayrollProcessor','p002')
+        PP2.pName = 'Better Income Processor';
+        PP.push(PP2);
+        return ppRegistry.addall(PP);
     })
     .then(function(){
     return getParticipantRegistry(ns + '.individual');
