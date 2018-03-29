@@ -2,10 +2,6 @@
  * Write your model definitions here
  */
 
-/**
- * Write your model definitions here
- */
-
 namespace org.afs.com
 
 participant PayrollProcessor identified by pID {
@@ -27,14 +23,14 @@ participant individual extends user {
   o String Last_Name
   o String Ocupation
   o String Employer
-  o String uHash
+  o String uHash 
   --> Report reports
 }
 
 asset Report identified by reportID {
   o String reportID
   o String uHash
-  o String iHash
+  o String iHash 
   o String IssueDate
   o String DateChecked optional
   o ReportStatus status optional

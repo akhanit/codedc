@@ -19,5 +19,18 @@
     "istanbul": "latest",
     "mkdirp": "latest",
     "mocha": "latest"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhanit/codedc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akhanit/codedc/issues"
+  },
+  "homepage": "https://github.com/akhanit/codedc#readme"
 }

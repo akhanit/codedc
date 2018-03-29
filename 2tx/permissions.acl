@@ -1,0 +1,78 @@
+ /**
+ * New access control file
+ */
+ rule AdminSystemAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.NetworkAdmin#admin"
+     operation: ALL
+     resource: "org.hyperledger.composer.system.**"
+     action: ALLOW
+ }
+
+ rule ParticipantSystemAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.Participant"
+     operation: ALL
+     resource: "org.hyperledger.composer.system.**"
+     action: ALLOW
+ }
+
+ rule AdminBusinessAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.NetworkAdmin#admin"
+     operation: ALL
+     resource: "org.afs.com.**"
+     action: ALLOW
+ }
+
+ rule PPBusinessAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.afs.com.PayrollProcessor"
+     operation: READ
+     resource: "org.hyperledger.composer.system.Network#codedc_net@0.0.1"
+     action: ALLOW
+ }
+
+ rule AccessAllHistorian {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.hyperledger.composer.system.Participant"
+     operation: READ
+     resource: "org.hyperledger.composer.system.AssetRegistry#org.hyperledger.composer.system.HistorianRecord"
+     action: ALLOW
+ }
+
+ rule PPReadAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.afs.com.PayrollProcessor"
+     operation: READ
+     resource:"org.hyperledger.composer.system.AssetRegistry#org.afs.com.Report"
+     action: ALLOW
+ }
+
+ rule PPReadAccess2 {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.afs.com.PayrollProcessor"
+     operation: ALL
+     resource:"org.afs.com.individual"
+     action: ALLOW
+ }
+
+ rule PPTxAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant: "org.afs.com.PayrollProcessor"
+     operation: ALL
+     resource:"org.afs.com.createReport"
+     action: ALLOW
+ }
+
+ rule PPReadReportAccess {
+     description: "AllAccess - grant everything to everybody."
+     participant(p): "org.afs.com.PayrollProcessor"
+     operation: CREATE,READ,UPDATE
+     resource(r):"org.afs.com.Report"
+     condition: (r.creator.getIdentifier() == p.getIdentifier())
+     action: ALLOW
+ }
+
+
+
