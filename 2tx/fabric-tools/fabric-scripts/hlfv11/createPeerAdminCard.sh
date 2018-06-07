@@ -1,16 +1,6 @@
 #!/bin/bash
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-# http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Exit on first error
+set -e
 
 Usage() {
 	echo ""
@@ -58,20 +48,17 @@ if [ -z "${HL_COMPOSER_CLI}" ]; then
 fi
 
 echo
-# check that the composer command exists at a version >v0.16
-COMPOSER_VERSION=$("${HL_COMPOSER_CLI}" --version 2>/dev/null)
-COMPOSER_RC=$?
-
-if [ $COMPOSER_RC -eq 0 ]; then
-    AWKRET=$(echo $COMPOSER_VERSION | awk -F. '{if ($2<19) print "1"; else print "0";}')
-    if [ $AWKRET -eq 1 ]; then
-        echo Cannot use $COMPOSER_VERSION version of composer with fabric 1.1, v0.19 or higher is required
+# check that the composer command exists at a version >v0.15
+if hash "${HL_COMPOSER_CLI}"  2>/dev/null; then
+    "${HL_COMPOSER_CLI}"  --version | awk -F. '{if ($2<17) exit 1}'
+    if [ $? -eq 1 ]; then
+        echo 'Cannot use this version of composer with this level of fabric' 
         exit 1
     else
-        echo Using composer-cli at $COMPOSER_VERSION
+        echo Using composer-cli at $("${HL_COMPOSER_CLI}" --version)
     fi
 else
-    echo 'No version of composer-cli has been detected, you need to install composer-cli at v0.19 or higher'
+    echo 'Need to have composer-cli installed at v0.16 or greater'
     exit 1
 fi
 
@@ -147,8 +134,8 @@ fi
 "${HL_COMPOSER_CLI}"  card create -p DevServer_connection.json -u PeerAdmin -c "${CERT}" -k "${PRIVATE_KEY}" -r PeerAdmin -r ChannelAdmin --file $CARDOUTPUT
 
 if [ "${NOIMPORT}" != "true" ]; then
-    if "${HL_COMPOSER_CLI}"  card list -c PeerAdmin@hlfv1 > /dev/null; then
-        "${HL_COMPOSER_CLI}"  card delete -c PeerAdmin@hlfv1
+    if "${HL_COMPOSER_CLI}"  card list -n PeerAdmin@hlfv1 > /dev/null; then
+        "${HL_COMPOSER_CLI}"  card delete -n PeerAdmin@hlfv1
     fi
 
     "${HL_COMPOSER_CLI}"  card import --file /tmp/PeerAdmin@hlfv1.card 
