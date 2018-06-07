@@ -1,10 +1,12 @@
 'use strict';
 
-const crypto = require('crypto')
-const factory = getFactory()
-const ns = 'org.afs.com'
+var crypto = require('crypto')
+var factory = getFactory()
+var ns = 'org.afs.com'
 
-const _hash = (x) => crypto.createHash('sha256').update(x).digest('hex').toUpperCase().substring(0, 20)
+function _hash(x){ 
+    return crypto.createHash('sha256').update(x).digest('hex').toUpperCase().substring(0, 20)
+}
 
 function generateReports(User,Income){
     return getAssetRegistry(ns + '.Report')
@@ -25,7 +27,7 @@ function generateReports(User,Income){
   });
 }
 
-const ReportsOwners = {
+var ReportsOwners = {
     'r001':'p001',
     'r002':'p001',
     'r003':'p001',
@@ -36,7 +38,7 @@ const ReportsOwners = {
     'r008':'p002',
 };
 
-const Individuals = {
+var Individuals = {
     'u001':[
           {'userID':'u001',
          'First_Name':'John',
