@@ -1,4 +1,74 @@
 'use strict';
+
+const crypto = require('crypto')
+const factory = getFactory()
+const ns = 'org.afs.com'
+
+const _hash = (x) => crypto.createHash('sha256').update(x).digest('hex').toUpperCase().substring(0, 20)
+
+function generateReports(User,Income){
+    return getAssetRegistry(ns + '.Report')
+   .then(function(assetRegistry){
+             var r = [];
+             for( var j=0;j<User.reports.length; j++ ){
+                   var report = factory.newResource(ns,'Report',User.reports[j]);
+                   report.uHash = User.uHash;
+                   report.iHash = _hash(Income.toString());
+                   report.IssueDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+                   report.DateChecked = '';
+                   var pID = Reports[User.reports[j]];
+                   report.creator =  factory.newRelationship(ns,'PayrollProcessor',pID);
+                   report.status = "ISSUED";
+                   r.push(report);
+              }
+   return assetRegistry.addAll(r);
+  });
+}
+
+const ReportsOwners = {
+    'r001':'p001',
+    'r002':'p001',
+    'r003':'p001',
+    'r004':'p001',
+    'r005':'p002',
+    'r006':'p001',
+    'r007':'p001',
+    'r008':'p002',
+};
+
+const Individuals = {
+    'u001':[
+          {'userID':'u001',
+         'First_Name':'John',
+         'Last_Name':'Williams',
+         'Ocupation':'Developer',
+         'Employer':'Accenture',
+         'uHash':_hash('123456789'),
+         'reports':['r001','r002','r003']
+         }
+      ],
+  'u002': [
+          {'userID':'u002',
+         'First_Name':'Rick',
+         'Last_Name':'Winter',
+         'Ocupation':'Developer',
+         'Employer':'Accenture',
+         'uHash':_hash('345678912'),
+         'reports':['r004','r005']
+        }
+      ],
+  'u003': [
+          {'userID':'u003',
+         'First_Name':'Tom',
+         'Last_Name':'Anderson',
+         'Ocupation':'Developer',
+         'Employer':'Accenture',
+         'uHash':_hash('678912345'),
+         'reports':['r006','r007','r008']
+        }
+        ]
+};
+
 /**
  * Write your transction processor functions here
  */
@@ -33,11 +103,9 @@ function createReport(tx){
      return assetRegistry.getAll()
   	.then(function(reports){
         
-        var r = reports.length;
-
         //Create reportID looking if count is single digit or double digit
      	if(reports.length < 9){
-            reportID = 'r00'+(r+1).toString();
+            reportID = 'r00'+(r.length+1).toString();
         }
         else{         
             reportID = 'r0'+(r+1).toString();
@@ -49,7 +117,7 @@ function createReport(tx){
         //Assign property parameters to new report object
         report.uHash = TargetUser.uHash;
         //Client application will pass the hash of income data
-        report.iHash = tx.iHash;
+        report.iHash = _hash(tx.iHash);
         //Pending to check if tx.Date() works best
         report.IssueDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
         //Creating a relationship to the Payroll Processor invoking the transaction
@@ -82,13 +150,11 @@ function createReport(tx){
 }
 
 
-
 /**
  * Transaction to manage a report
  * @param {org.afs.com.validateReport} tx 
  * @transaction
  */
-
 
 function validateReport(tx){
     //Getting Factory
@@ -131,100 +197,17 @@ function validateReport(tx){
  * @transaction
  */
 function setupDemo() {
- 
-    var factory = getFactory();
-    var ns = 'org.afs.com';
 
-    var Reports = {
-        'r001': [{
-                  'Creator':'p001'
-        }],
-        'r002': [{
-                  'Creator':'p001'
-        }],
-        'r003': [{
-                  'Creator':'p001'
-        }],
-        'r004': [{
-                  'Creator':'p001'
-        }],
-        'r005': [{
-                  'Creator':'p002'
-        }],
-        'r006': [{
-                  'Creator':'p001'
-        }],
-        'r007': [{
-                  'Creator':'p001'
-        }],
-        'r008': [{
-                  'Creator':'p002'
-        }],
-    };
-   
-
-    var Individuals = {
-  				'u001':[
-                  	  {'userID':'u001',
-                       'First_Name':'John',
-                       'Last_Name':'Williams',
-                       'Ocupation':'Developer',
-                       'Employer':'Accenture',
-                       'uHash':'NDJNDSHOIDUSHFKFSD',
-                       'reports':['r001','r002','r003']
-                       }
-                	],
-                'u002': [
-      				  {'userID':'u002',
-                       'First_Name':'Rick',
-                       'Last_Name':'Winter',
-                       'Ocupation':'Developer',
-                       'Employer':'Accenture',
-                       'uHash':'NUSHFHPOIDUSHFKFSD',
-                       'reports':['r004','r005']
-                      }
-    				],
-                'u003': [
-                  	  {'userID':'u003',
-                       'First_Name':'Tom',
-                       'Last_Name':'Anderson',
-                       'Ocupation':'Developer',
-                       'Employer':'Accenture',
-                       'uHash':'NUSHFHPOINUSHFHPOI',
-                       'reports':['r006','r007','r008']
-                      }
-                  	]
-   	};
-  
-    function generateReports(User){
-           return getAssetRegistry(ns + '.Report')
-          .then(function(assetRegistry){
-                    var r = [];
-                    for( var j=0;j<User.reports.length; j++ ){
-                          var report = factory.newResource(ns,'Report',User.reports[j]);
-                          report.uHash = User.uHash;
-                          report.iHash = 'NDJNDSHOIDUSHFKFSD';
-                          report.IssueDate = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-                          report.DateChecked = '';
-                          var pID = Reports[User.reports[j]].Creator;
-                          report.creator =  factory.newRelationship(ns,'PayrollProcessor',pID);
-                          report.status = "ISSUED";
-                          r.push(report);
-                     }
-          return assetRegistry.addAll(r);
-         });
-    }
-  
     return getParticipantRegistry(ns + '.PayrollProcessor')
     .then(function(ppRegistry){
         var PP = [];
     	var PP1 = factory.newResource(ns,'PayrollProcessor','p001')
-        PP1.pName = 'Income Processor';
+        PP1.pName = 'Income Processor 1';
         PP.push(PP1);
         var PP2 = factory.newResource(ns,'PayrollProcessor','p002')
-        PP2.pName = 'Better Income Processor';
+        PP2.pName = 'Income Processor 2';
         PP.push(PP2);
-        return ppRegistry.addall(PP);
+        return ppRegistry.addAll(PP);
     })
     .then(function(){
     return getParticipantRegistry(ns + '.individual');
@@ -263,9 +246,6 @@ function setupDemo() {
 
  //Do not use!! Still on development...
 function resetDemo() {
-  
- var factory = getFactory();
- var ns = 'org.afs.com';
   
  return getParticipantRegistry(ns+'.individual')
   .then(function(individualRegistry){

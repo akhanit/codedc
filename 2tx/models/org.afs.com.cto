@@ -24,7 +24,7 @@ participant individual extends user {
   o String Ocupation
   o String Employer
   o String uHash 
-  --> Report reports
+  o String [] reports
 }
 
 asset Report identified by reportID {
@@ -39,13 +39,18 @@ asset Report identified by reportID {
 
 transaction updateReport {
   --> Report reportID
-  o String iHash
+  o String income
 }
 
 transaction validateReport {
   o String iHash
   o String uHash
   --> Report report
+}
+
+transaction createReport{
+  o String income
+  --> individual ReportOwner
 }
 
 transaction setupDemo {
@@ -72,4 +77,5 @@ enum ReportStatus {
   	o VALID
     o INVALID
     o PENDING
+    o ISSUED
 }
